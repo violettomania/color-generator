@@ -1,1 +1,1 @@
-## React TS Project
+## Color generator
