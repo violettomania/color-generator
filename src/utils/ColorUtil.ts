@@ -1,13 +1,18 @@
+type RGBColor = { r: number; g: number; b: number };
+
 function componentToHex(c: number) {
   let hex = c.toString(16);
   return hex.length === 1 ? '0' + hex : hex;
 }
 
-function rgbToHex(r: number, g: number, b: number) {
-  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+function rgbToHex(color: RGBColor) {
+  return (
+    '#' +
+    componentToHex(color.r) +
+    componentToHex(color.g) +
+    componentToHex(color.b)
+  );
 }
-
-type RGBColor = { r: number; g: number; b: number };
 
 function darkenColor(color: RGBColor, factor: number): RGBColor {
   return {
