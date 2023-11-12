@@ -1,6 +1,3 @@
-// -14, ±17, ±19 - down
-// +12 - up
-
 export default function App() {
   return (
     <main>
