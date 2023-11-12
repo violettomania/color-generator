@@ -1,4 +1,4 @@
-type RGBColor = { r: number; g: number; b: number };
+export type RGBColor = { r: number; g: number; b: number };
 
 function componentToHex(c: number) {
   let hex = c.toString(16);
@@ -12,6 +12,17 @@ function rgbToHex(color: RGBColor) {
     componentToHex(color.g) +
     componentToHex(color.b)
   );
+}
+
+function hexToRgb(hex: string): RGBColor | null {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 }
 
 function darkenColor(color: RGBColor, factor: number): RGBColor {
@@ -32,6 +43,7 @@ function lightenColor(color: RGBColor, factor: number): RGBColor {
 
 export const ColorUtil = {
   rgbToHex,
+  hexToRgb,
   darkenColor,
   lightenColor,
 };

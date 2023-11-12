@@ -1,4 +1,28 @@
+import { useState } from 'react';
+import { ColorUtil, RGBColor } from '../utils/colorUtil';
+
 export default function App() {
+  const [color, setColor] = useState('#f15025');
+  const [hues, setHues] = useState<RGBColor[]>([]);
+
+  const handleSubmit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const rgb = ColorUtil.hexToRgb(color);
+    const hues = [];
+    let factor = 10;
+
+    // TODO: use a map: {rgb:hex}
+    // TODO: move to a util file
+
+    if (rgb) {
+      for (let i = 0; i < 10; i++) {
+        hues.push(ColorUtil.lightenColor(rgb, factor));
+        factor += 10;
+      }
+      setHues(hues);
+    }
+  };
+
   return (
     <main>
       <section className='container'>
@@ -15,26 +39,23 @@ export default function App() {
             className='btn'
             type='submit'
             style={{ background: 'rgb(238, 215, 209)' }}
+            onClick={handleSubmit}
           >
             submit
           </button>
         </form>
       </section>
       <section className='colors'>
-        <article
-          className='color false'
-          style={{ backgroundColor: 'rgb(255, 255, 255)' }}
-        >
-          <p className='percent-value'>100%</p>
-          <p className='color-value'>#ffffff</p>
-        </article>
-        <article
-          className='color color-light'
-          style={{ backgroundColor: 'rgb(214, 194, 188)' }}
-        >
-          <p className='percent-value'>10%</p>
-          <p className='color-value'>#d6c2bc</p>
-        </article>
+        {hues.map((hue, index) => (
+          <article
+            key={hue.r + index}
+            className='color color-light'
+            style={{ backgroundColor: `rgb(${hue.r}), ${hue.g}), ${hue.b})` }}
+          >
+            <p className='percent-value'>{index * 10}</p>
+            <p className='color-value'>#ffffff</p>
+          </article>
+        ))}
       </section>
       <div className='Toastify'></div>
     </main>
