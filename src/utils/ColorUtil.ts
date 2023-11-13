@@ -14,6 +14,10 @@ function rgbToHex(color: RGBColor) {
   );
 }
 
+function isValidHexColor(hex: string): boolean {
+  return /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.test(hex);
+}
+
 function hexToRgb(hex: string): RGBColor | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
@@ -42,6 +46,7 @@ function lightenColor(color: RGBColor, factor: number): RGBColor {
 }
 
 export const ColorUtil = {
+  isValidHexColor,
   rgbToHex,
   hexToRgb,
   darkenColor,
