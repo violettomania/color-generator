@@ -3,7 +3,7 @@ import {
   isValidHexColor,
   generateLightColorPairs,
   generateDarkColorPairs,
-} from '../utils/colorUtil';
+} from '../utils/ColorUtil';
 import { ToastContainer, toast } from 'react-toastify';
 
 const initialColor = '#f15025';
