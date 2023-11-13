@@ -15,14 +15,14 @@ export default function App() {
   const [darkColorPairs, setDarkColorPairs] = useState<ColorPair[]>([]);
 
   useEffect(() => {
-    const lightColorPairs = generateLightColorPairs(color);
-    const darkColorPairs = generateDarkColorPairs(color);
+    const lightColorPairs = generateLightColorPairs(initialColor);
+    const darkColorPairs = generateDarkColorPairs(initialColor);
 
     setLightColorPairs(lightColorPairs);
     setDarkColorPairs(darkColorPairs);
-  }, [color]);
+  }, []);
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputColor(e.target.value);
   };
 
@@ -52,12 +52,12 @@ export default function App() {
       <section className='container'>
         <h4>color generator</h4>
         <form className='color-form'>
-          <input type='color' value={inputColor} onChange={handleColorChange} />
+          <input type='color' value={inputColor} onChange={handleChange} />
           <input
             type='text'
             placeholder={color}
             value={inputColor}
-            onChange={handleColorChange}
+            onChange={handleChange}
           />
           <button
             className='btn'
