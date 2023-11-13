@@ -1,26 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ColorUtil, RGBColor } from '../utils/colorUtil';
+
+type ColorPair = { rgb: RGBColor; hex: string };
 
 export default function App() {
   const [color, setColor] = useState('#f15025');
-  const [hues, setHues] = useState<RGBColor[]>([]);
+  const [colorPairs, setHues] = useState<ColorPair[]>([]);
 
-  const handleSubmit = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const generateColorPairs = (color: string) => {
     const rgb = ColorUtil.hexToRgb(color);
-    const hues = [];
-    let factor = 10;
-
-    // TODO: use a map: {rgb:hex}
-    // TODO: move to a util file
+    const colorPairs = [];
+    let factor = 0.1;
 
     if (rgb) {
       for (let i = 0; i < 10; i++) {
-        hues.push(ColorUtil.lightenColor(rgb, factor));
-        factor += 10;
+        factor = parseFloat(factor.toFixed(2));
+        colorPairs.push({
+          rgb: ColorUtil.lightenColor(rgb, factor),
+          hex: ColorUtil.rgbToHex(ColorUtil.lightenColor(rgb, factor)),
+        });
+        factor += 0.1;
       }
-      setHues(hues);
+      setHues(colorPairs);
     }
+  };
+
+  useEffect(() => {
+    generateColorPairs(color);
+  }, [color]);
+
+  const handleSubmit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    generateColorPairs(color);
   };
 
   return (
@@ -28,17 +39,17 @@ export default function App() {
       <section className='container'>
         <h4>color generator</h4>
         <form className='color-form'>
-          <input type='color' value='#eed7d1' onChange={() => {}} />
+          <input type='color' value={color} onChange={() => {}} />
           <input
             type='text'
-            placeholder='#f15025'
-            value='#eed7d1'
+            placeholder={color}
+            value={color}
             onChange={() => {}}
           />
           <button
             className='btn'
             type='submit'
-            style={{ background: 'rgb(238, 215, 209)' }}
+            style={{ background: color }}
             onClick={handleSubmit}
           >
             submit
@@ -46,16 +57,18 @@ export default function App() {
         </form>
       </section>
       <section className='colors'>
-        {hues.map((hue, index) => (
-          <article
-            key={hue.r + index}
-            className='color color-light'
-            style={{ backgroundColor: `rgb(${hue.r}), ${hue.g}), ${hue.b})` }}
-          >
-            <p className='percent-value'>{index * 10}</p>
-            <p className='color-value'>#ffffff</p>
-          </article>
-        ))}
+        {colorPairs.map(({ rgb, hex }, index) => {
+          return (
+            <article
+              key={hex}
+              className='color color-light'
+              style={{ backgroundColor: hex }}
+            >
+              <p className='percent-value'>{index * 10}%</p>
+              <p className='color-value'>{hex}</p>
+            </article>
+          );
+        })}
       </section>
       <div className='Toastify'></div>
     </main>
