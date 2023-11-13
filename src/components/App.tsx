@@ -1,48 +1,16 @@
 import { useState, useEffect } from 'react';
-import { ColorUtil, RGBColor } from '../utils/colorUtil';
+import {
+  isValidHexColor,
+  generateLightColorPairs,
+  generateDarkColorPairs,
+} from '../utils/colorUtil';
 import { ToastContainer, toast } from 'react-toastify';
 
-type ColorPair = { rgb: RGBColor; hex: string };
-
-const generateColorPairs = (
-  color: string,
-  callback: (rgb: RGBColor, factor: number) => RGBColor,
-  includeOriginal = false
-): ColorPair[] => {
-  const colorPairs: ColorPair[] = [];
-  const rgb = ColorUtil.hexToRgb(color);
-  if (rgb) {
-    if (includeOriginal) {
-      const originalColorPair = { rgb, hex: ColorUtil.rgbToHex(rgb) };
-      colorPairs.push(originalColorPair);
-    }
-
-    let factor = 0.1;
-
-    for (let i = 0; i < 10; i++) {
-      factor = parseFloat(factor.toFixed(2));
-      colorPairs.push({
-        rgb: callback(rgb, factor),
-        hex: ColorUtil.rgbToHex(ColorUtil.lightenColor(rgb, factor)),
-      });
-      factor += 0.1;
-    }
-  }
-
-  return colorPairs;
-};
-
-const generateLightColorPairs = (color: string): ColorPair[] => {
-  return generateColorPairs(color, ColorUtil.lightenColor, true);
-};
-
-const generateDarkColorPairs = (color: string): ColorPair[] => {
-  return generateColorPairs(color, ColorUtil.darkenColor);
-};
+const initialColor = '#f15025';
 
 export default function App() {
-  const [inputColor, setInputColor] = useState('#f15025');
-  const [color, setColor] = useState('#f15025');
+  const [inputColor, setInputColor] = useState(initialColor);
+  const [color, setColor] = useState(initialColor);
   const [lightColorPairs, setLightColorPairs] = useState<ColorPair[]>([]);
   const [darkColorPairs, setDarkColorPairs] = useState<ColorPair[]>([]);
 
@@ -60,11 +28,13 @@ export default function App() {
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!ColorUtil.isValidHexColor(inputColor)) {
+    if (!isValidHexColor(inputColor)) {
       toast.error('Please enter a valid hex color!');
       return;
     }
+
     setColor(inputColor);
+
     const lightColorPairs = generateLightColorPairs(inputColor);
     const darkColorPairs = generateDarkColorPairs(inputColor);
 
