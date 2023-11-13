@@ -4,16 +4,25 @@ import { ToastContainer, toast } from 'react-toastify';
 
 type ColorPair = { rgb: RGBColor; hex: string };
 
-const generateColorPairs = (color: string): ColorPair[] => {
+const generateColorPairs = (
+  color: string,
+  callback: (rgb: RGBColor, factor: number) => RGBColor,
+  includeOriginal = false
+): ColorPair[] => {
+  const colorPairs: ColorPair[] = [];
   const rgb = ColorUtil.hexToRgb(color);
-  const colorPairs = [];
-  let factor = 0.1;
-
   if (rgb) {
+    if (includeOriginal) {
+      const originalColorPair = { rgb, hex: ColorUtil.rgbToHex(rgb) };
+      colorPairs.push(originalColorPair);
+    }
+
+    let factor = 0.1;
+
     for (let i = 0; i < 10; i++) {
       factor = parseFloat(factor.toFixed(2));
       colorPairs.push({
-        rgb: ColorUtil.lightenColor(rgb, factor),
+        rgb: callback(rgb, factor),
         hex: ColorUtil.rgbToHex(ColorUtil.lightenColor(rgb, factor)),
       });
       factor += 0.1;
@@ -23,14 +32,26 @@ const generateColorPairs = (color: string): ColorPair[] => {
   return colorPairs;
 };
 
+const generateLightColorPairs = (color: string): ColorPair[] => {
+  return generateColorPairs(color, ColorUtil.lightenColor, true);
+};
+
+const generateDarkColorPairs = (color: string): ColorPair[] => {
+  return generateColorPairs(color, ColorUtil.darkenColor);
+};
+
 export default function App() {
   const [inputColor, setInputColor] = useState('#f15025');
   const [color, setColor] = useState('#f15025');
-  const [colorPairs, setColorPairs] = useState<ColorPair[]>([]);
+  const [lightColorPairs, setLightColorPairs] = useState<ColorPair[]>([]);
+  const [darkColorPairs, setDarkColorPairs] = useState<ColorPair[]>([]);
 
   useEffect(() => {
-    const colorPairs = generateColorPairs(color);
-    setColorPairs(colorPairs);
+    const lightColorPairs = generateLightColorPairs(color);
+    const darkColorPairs = generateDarkColorPairs(color);
+
+    setLightColorPairs(lightColorPairs);
+    setDarkColorPairs(darkColorPairs);
   }, [color]);
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +65,11 @@ export default function App() {
       return;
     }
     setColor(inputColor);
-    const colorPairs = generateColorPairs(inputColor);
-    setColorPairs(colorPairs);
+    const lightColorPairs = generateLightColorPairs(inputColor);
+    const darkColorPairs = generateDarkColorPairs(inputColor);
+
+    setLightColorPairs(lightColorPairs);
+    setDarkColorPairs(darkColorPairs);
   };
 
   const handleCopy = (hex: string) => {
@@ -76,7 +100,22 @@ export default function App() {
         </form>
       </section>
       <section className='colors'>
-        {colorPairs.map(({ rgb, hex }, index) => {
+        {lightColorPairs
+          .map(({ rgb, hex }, index) => {
+            return (
+              <article
+                key={hex}
+                className='color'
+                style={{ backgroundColor: hex }}
+                onClick={() => handleCopy(hex)}
+              >
+                <p className='percent-value'>{index * 10}%</p>
+                <p className='color-value'>{hex}</p>
+              </article>
+            );
+          })
+          .reverse()}
+        {darkColorPairs.map(({ rgb, hex }, index) => {
           return (
             <article
               key={hex}
@@ -84,7 +123,7 @@ export default function App() {
               style={{ backgroundColor: hex }}
               onClick={() => handleCopy(hex)}
             >
-              <p className='percent-value'>{index * 10}%</p>
+              <p className='percent-value'>{(index + 1) * 10}%</p>
               <p className='color-value'>{hex}</p>
             </article>
           );
