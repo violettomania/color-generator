@@ -40,7 +40,7 @@ export default function App() {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!ColorUtil.isValidHexColor(inputColor)) {
-      showError('Please enter a valid hex color!');
+      toast.error('Please enter a valid hex color!');
       return;
     }
     setColor(inputColor);
@@ -48,17 +48,9 @@ export default function App() {
     setColorPairs(colorPairs);
   };
 
-  const showError = (message: string) => {
-    toast.error(message, {
-      position: 'top-center',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
+  const handleCopy = (hex: string) => {
+    navigator.clipboard.writeText(hex);
+    toast.success('Color copied to clipboard!');
   };
 
   return (
@@ -90,6 +82,7 @@ export default function App() {
               key={hex}
               className='color color-light'
               style={{ backgroundColor: hex }}
+              onClick={() => handleCopy(hex)}
             >
               <p className='percent-value'>{index * 10}%</p>
               <p className='color-value'>{hex}</p>
@@ -98,7 +91,18 @@ export default function App() {
         })}
       </section>
       <div>
-        <ToastContainer position='top-center' />
+        <ToastContainer
+          position='top-center'
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme='light'
+        />
       </div>
     </main>
   );
