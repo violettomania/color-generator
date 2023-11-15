@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import {
   isValidHexColor,
+  initialColor,
   generateLightColorPairs,
   generateDarkColorPairs,
 } from '../utils/ColorUtil';
 import { ToastContainer, toast } from 'react-toastify';
-import Color from './Color';
-
-const initialColor = '#f15025';
+import Colors from './Colors';
 
 export default function App() {
   const [inputColor, setInputColor] = useState(initialColor);
@@ -70,32 +69,7 @@ export default function App() {
           </button>
         </form>
       </section>
-      <section className='colors'>
-        {lightColorPairs
-          .map((colorPair, index) => (
-            <Color
-              key={colorPair.hex}
-              {...{
-                className: '',
-                percent: index * 10,
-                handleCopy,
-                ...colorPair,
-              }}
-            />
-          ))
-          .reverse()}
-        {darkColorPairs.map((colorPair, index) => (
-          <Color
-            key={colorPair.hex}
-            {...{
-              className: 'color-light',
-              percent: (index + 1) * 10,
-              handleCopy,
-              ...colorPair,
-            }}
-          />
-        ))}
-      </section>
+      <Colors {...{ lightColorPairs, darkColorPairs, onCopy: handleCopy }} />
       <div>
         <ToastContainer
           position='top-center'
