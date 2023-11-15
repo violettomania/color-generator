@@ -5,6 +5,7 @@ import {
   generateDarkColorPairs,
 } from '../utils/ColorUtil';
 import { ToastContainer, toast } from 'react-toastify';
+import Color from './Color';
 
 const initialColor = '#f15025';
 
@@ -71,33 +72,29 @@ export default function App() {
       </section>
       <section className='colors'>
         {lightColorPairs
-          .map(({ rgb, hex }, index) => {
-            return (
-              <article
-                key={hex}
-                className='color'
-                style={{ backgroundColor: hex }}
-                onClick={() => handleCopy(hex)}
-              >
-                <p className='percent-value'>{index * 10}%</p>
-                <p className='color-value'>{hex}</p>
-              </article>
-            );
-          })
+          .map((colorPair, index) => (
+            <Color
+              key={colorPair.hex}
+              {...{
+                className: '',
+                percent: index * 10,
+                handleCopy,
+                ...colorPair,
+              }}
+            />
+          ))
           .reverse()}
-        {darkColorPairs.map(({ rgb, hex }, index) => {
-          return (
-            <article
-              key={hex}
-              className='color color-light'
-              style={{ backgroundColor: hex }}
-              onClick={() => handleCopy(hex)}
-            >
-              <p className='percent-value'>{(index + 1) * 10}%</p>
-              <p className='color-value'>{hex}</p>
-            </article>
-          );
-        })}
+        {darkColorPairs.map((colorPair, index) => (
+          <Color
+            key={colorPair.hex}
+            {...{
+              className: 'color-light',
+              percent: (index + 1) * 10,
+              handleCopy,
+              ...colorPair,
+            }}
+          />
+        ))}
       </section>
       <div>
         <ToastContainer
