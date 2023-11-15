@@ -1,5 +1,7 @@
 type RGBColor = { r: number; g: number; b: number };
 
+export const initialColor = '#f15025';
+
 const componentToHex = (c: number) => {
   let hex = c.toString(16);
   return hex.length === 1 ? '0' + hex : hex;

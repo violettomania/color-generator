@@ -2,14 +2,14 @@ interface ColorProps {
   hex: string;
   className: string;
   percent: number;
-  handleCopy: (hex: string) => void;
+  onCopy: (hex: string) => void;
 }
 
 export default function Color({
   hex,
   className,
   percent,
-  handleCopy,
+  onCopy: handleCopy,
 }: ColorProps) {
   return (
     <article
